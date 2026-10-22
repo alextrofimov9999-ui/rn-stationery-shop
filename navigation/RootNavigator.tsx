@@ -12,27 +12,9 @@ export default function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="ProductList"
-          component={ProductListScreen}
-          options={{
-            title: 'Канцтовары',
-            headerRight: () => <HeaderCartButton />,
-          }}
-        />
-        <Stack.Screen
-          name="ProductDetails"
-          component={ProductDetailsScreen}
-          options={{
-            title: 'Товар',
-            headerRight: () => <HeaderCartButton />,
-          }}
-        />
-        <Stack.Screen
-          name="Cart"
-          component={CartScreen}
-          options={{ title: 'Корзина' }}
-        />
+        <Stack.Screen name="ProductList" component={ProductListScreen} options={{ title: 'Аптека', headerRight: () => <HeaderCartButton /> }} />
+        <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{ title: 'Лекарство', headerRight: () => <HeaderCartButton /> }} />
+        <Stack.Screen name="Cart" component={CartScreen} options={{ title: 'Корзина' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

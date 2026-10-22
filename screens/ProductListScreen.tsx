@@ -1,15 +1,9 @@
 import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { fetchProducts } from '../api/mockProductsAPI';
-import { Product } from '../types/product';
+import { fetchDrugs } from '../api/mockProductsAPI';
+import { Drug } from '../types/product';
 import { RootStackParamList } from '../types/navigation';
 import ProductListItem from '../components/ProductListItem';
 import EmptyState from '../components/EmptyState';
@@ -18,7 +12,7 @@ type Nav = NativeStackNavigationProp<RootStackParamList, 'ProductList'>;
 
 export default function ProductListScreen() {
   const navigation = useNavigation<Nav>();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [drugs, setDrugs] = useState<Drug[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,10 +20,10 @@ export default function ProductListScreen() {
     let alive = true;
     (async () => {
       try {
-        const data = await fetchProducts();
-        if (alive) setProducts(data);
+        const data = await fetchDrugs();
+        if (alive) setDrugs(data);
       } catch (e) {
-        if (alive) setError('Не удалось загрузить товары');
+        if (alive) setError('Не удалось загрузить лекарства');
       } finally {
         if (alive) setLoading(false);
       }
@@ -42,8 +36,8 @@ export default function ProductListScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1e88e5" />
-        <Text style={styles.hint}>Загружаем каталог…</Text>
+        <ActivityIndicator size="large" color="#2e7d32" />
+        <Text style={styles.hint}>Загружаем аптеку…</Text>
       </View>
     );
   }
@@ -52,21 +46,19 @@ export default function ProductListScreen() {
     return <EmptyState title="Ошибка" subtitle={error} />;
   }
 
-  if (products.length === 0) {
-    return <EmptyState title="Каталог пуст" />;
+  if (drugs.length === 0) {
+    return <EmptyState title="Аптека пуста" />;
   }
 
   return (
     <FlatList
-      data={products}
-      keyExtractor={(p) => p.id}
+      data={drugs}
+      keyExtractor={(drug) => drug.id}
       contentContainerStyle={styles.list}
       renderItem={({ item }) => (
         <ProductListItem
           product={item}
-          onPress={() =>
-            navigation.navigate('ProductDetails', { productId: item.id })
-          }
+          onPress={() => navigation.navigate('ProductDetails', { productId: item.id })}
         />
       )}
     />

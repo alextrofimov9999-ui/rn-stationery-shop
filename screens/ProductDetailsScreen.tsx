@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { fetchProductById } from '../api/mockProductsAPI';
-import { Product } from '../types/product';
-import { RootStackParamList } from "../types/navigation";
+import { fetchDrugById } from '../api/mockProductsAPI';
+import { Drug } from '../types/product';
+import { RootStackParamList } from '../types/navigation';
 import ProductDetailsCard from '../components/ProductDetailsCard';
 import EmptyState from '../components/EmptyState';
 import { useCartStore } from '../stores/cartStore';
@@ -16,16 +16,15 @@ export default function ProductDetailsScreen() {
   const { params } = useRoute<RouteT>();
   const navigation = useNavigation<Nav>();
   const add = useCartStore((s) => s.add);
-
-  const [product, setProduct] = useState<Product | null>(null);
+  const [drug, setDrug] = useState<Drug | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let alive = true;
     (async () => {
-      const p = await fetchProductById(params.productId);
+      const foundDrug = await fetchDrugById(params.productId);
       if (alive) {
-        setProduct(p ?? null);
+        setDrug(foundDrug ?? null);
         setLoading(false);
       }
     })();
@@ -37,23 +36,23 @@ export default function ProductDetailsScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1e88e5" />
+        <ActivityIndicator size="large" color="#2e7d32" />
       </View>
     );
   }
 
-  if (!product) {
-    return <EmptyState title="Товар не найден" />;
+  if (!drug) {
+    return <EmptyState title="Лекарство не найдено" />;
   }
 
   return (
     <View style={styles.container}>
-      <ProductDetailsCard product={product} />
+      <ProductDetailsCard product={drug} />
       <View style={styles.footer}>
         <Pressable
           style={styles.buyBtn}
           onPress={() => {
-            add(product);
+            add(drug);
             navigation.navigate('Cart');
           }}
         >
@@ -68,11 +67,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   footer: { padding: 16, borderTopWidth: 1, borderTopColor: '#eee' },
-  buyBtn: {
-    backgroundColor: '#1e88e5',
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
+  buyBtn: { backgroundColor: '#2e7d32', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
   buyBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });
